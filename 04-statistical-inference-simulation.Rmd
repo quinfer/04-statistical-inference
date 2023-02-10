@@ -1,0 +1,457 @@
+---
+title: "FIN7028: Times Series Financial Econometrics 4"
+subtitle: "Statistical inference"
+author: "Barry Quinn PhD CStat"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    lib_dir: libs
+    css: ["xaringan-themer.css","mycssblend.css"]
+    nature:
+     countdown: 120000
+     highlightStyle: github
+     highlightLines: true
+     highlightSpans: true
+     countIncrementalSlides: true
+     ratio: "16:9"
+     seal: true 
+---
+
+
+```{r setup1, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,out.width = "40%")
+pacman::p_load('tidyverse','fontawesome','xaringanExtra','xaringanthemer','bayesplot','arm',"rstanarm","bayesplot",install=FALSE)
+use_panelset()
+use_tile_view()
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+  )
+```
+
+layout: true
+<div class="my-footer">
+<span>
+Barry Quinn CStat
+</span>
+
+</div> 
+---
+class:inverse, middle
+
+# Learning Outcomes
+
+.large[
+- What is statistical inference?
+- Challenges when running regressions
+- Building and check models
+- Interpretting models
+- Bayesian and classical inference in practice
+- Concluding and questions
+]
+
+---
+class: middle
+
+# Three challenges of statistics
+.acid[
+- Generalising from sample to population
+
+- Generalising from treatment to control group
+
+- Generalising from observed measurement to the underlying construct of interest
+]
+
+.blockquote[All three challenges can be framed as problems of prediction
+`r tufte::quote_footer("Vehtari,Gelman and Hill, 2021")`(hereafter ROS)]
+
+---
+class: middle
+
+# Weapon of choice in social science
+
+.glow[regression]
+
+.blockquote.large[ Regression is a method that allows researchers to summarisze how predictions or average values of an *outcome* vary across individuals defined by a set of predictors]
+
+---
+class: middle
+
+# Regression uses
+
+.acidline[
+- **Prediction:** *Predicting victory or defeat in a sport contest*
+- **Exploring association:** *Summarising how well one variable, or set of variables, predicts outcomes, for example risk factor modelling in asset pricing*
+- **Extrapolation:** *Adjusting for known differences between the sample (observed data) and a population of interest, For example adjusting for Big Data online survey data for response bias*
+- **Causal inference:** *The most important use: estimating treatment effects by comparing outcomes under treatment and control*
+]
+
+---
+class: middle
+
+# Weapon of choice in social science
+
+.blockquote.large[A key challenge for causal inference is ensuring that treatment and control groups are similar, on average, before exposure to the treatment, or else adjusting for differences between groups- ROS]
+
+---
+class: middle
+
+## Challenges in building, understanding, and interpreting regressions
+
+.panelset[
+.panel[
+.panel-name[Hypothetical example of regression for causal inference]
+- Start with a simple scenario comparing treatment and control groups.  
+- This condition can be approximated by *randomisation*, a design in which experimental units (in finance we can think of these a firms) are randomly assigned to treatment or control.
+- Consider the following hypothetical example where $x$ is a random market shock (the treatment) affecting only certain firms in the UK market (x=0 for control or x=1 for treatment)
+]
+.panel[.panel-name[Fake data]
+
+```{r}
+N <- 50
+x <- runif(N, 1, 5)
+y <- rnorm(N, 10 + 3*x, 3)
+x_binary <- ifelse(x<3, 0, 1)
+data <- data.frame(N, x, y, x_binary)
+lm_1a<-lm(y~x_binary,data)
+```
+]
+.panel[.panel-name[linear regression with binary predictor]
+
+.small[
+```{r}
+display(lm_1a)
+```
+
+- If we can assume comparability of the groups assigned to different treatments, a regression predicting the outcome given treatment gives us a direct estimate of the causal effect.
+- .acidline[We will come back to the important set of assumptions charges this statistically engineered robot with causal inference power]
+- The results opposite show that the treatement as a positive and significant effect on our outcome measure.
+]
+]
+.panel[.panel-name[Visualising data + model]
+```{r, echo=FALSE}
+data %>%
+  ggplot(aes(x=x_binary,y=y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x="", y="Outcome measurement",title="Regression with binary treatment") +
+  geom_text( aes(x=0.3,y=13,label=paste("Estimated treatment effect is\nslope of fitted line: ", fround(coef(lm_1a)[2], 1)),
+            parse = TRUE))
+
+```
+]
+]
+
+
+---
+class: middle
+
+## linear regression with continous predictor
+
+.panelset[
+.panel[.panel-name[Ethical output]
+
+- The display function from `arm` purposefully removes the visualising of p-values.
+
+```{r}
+lm_1b <- lm(y ~ x, data = data)
+display(lm_1b)
+```
+
+]
+.panel[.panel-name[Visualise data and model]
+
+```{r, echo=FALSE}
+data %>%
+  ggplot(aes(x=x,y=y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x="Treatment level", y="Outcome measurement",title="Regression with continuous treatment") +
+  geom_text( aes(x=3.2,y=15,label=paste("Estimated treatment\neffect per unit of x is\nslope of fitted line: ", fround(coef(lm_1b)[2], 1)),
+            parse = TRUE))
+
+```
+]
+]
+
+---
+class: middle
+
+## Non-linear predictor
+
+.panelset[
+.panel[.panel-name[Fake data]
+
+```{r}
+y <- rnorm(N, 5 + 30*exp(-x), 2) #<< Non-linear fake variable creation
+data$y <- y
+lm_2a <- lm(y ~ x, data = data)
+display(lm_2a)
+```
+]
+.panel[.panel-name[linear regression output]
+
+```{r}
+display(lm_2a)
+```
+
+]
+.panel[
+.panel-name[Non-linear effect]
+```{r, echo=FALSE}
+data %>%
+  ggplot(aes(x=x,y=y)) +
+  geom_point() +
+  #geom_smooth(method = "loess", se = FALSE) +
+  labs(x="Treatment level", y="Outcome measurement",title="Nonlinear treatment effect") +
+  geom_function(fun=function(x) 5+ 30*exp(-x))
+```
+]
+.panel[.panel-name[Linear effect model]
+```{r, echo=FALSE}
+data %>%
+  ggplot(aes(x=x,y=y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+    labs(x="Treatment level", y="Outcome measurement",title="Nonlinear effect, estimated with straight line fit")
+```
+
+]
+]
+
+---
+class: middle
+
+## Hypothetical causal adjustment example
+
+.panelset[
+.panel[
+.panel-name[Fake data with imbalance in groups]
+```{r}
+N <- 100
+xx <- rnorm(N, 0, 1)^2
+z <- rep(0:1, N/2)
+xx <- ifelse(z==0, rnorm(N, 0, 1.2)^2, rnorm(N, 0, .8)^2)
+yy <- rnorm(N, 20 + 5*xx + 10*z, 3)
+data <- data.frame(xx, z, yy)
+```
+]
+.panel[
+.panel-name[regression output]
+```{r}
+lm_2 <- lm(yy ~ xx + z, data=data)
+display(lm_2)
+```
+
+- This hypothetical example can be summarised as follows:
+
+```{r,include=FALSE}
+data %>%
+  group_by(z) %>%
+  dplyr::summarise(mean(xx),mean(yy))->means
+```
+
+- On average, the treated units were 5.02 points higher than the control, $\bar{y}$=`r round(means[2,3],2)` for the treated and $\bar{y}$=`r round(means[1,3],2)` for the controls. But the two groups differed in their pre-treatment predictor: $\bar{x}$=`r round(means[2,2],2)` for treated and  $\bar{x}$=`r round(means[1,2],2)` for controls.  After adjusting for this difference, we obtained an estimated treatment effect of 10.0
+
+]
+.panel[
+.panel-name[Visualise data + model]
+```{r, echo=FALSE, fig.height=6,fig.width=12}
+x0 <- 5.2
+data %>%
+  ggplot(aes(x=xx,y=yy,colour=as.factor(z))) +
+  geom_point() +
+    labs(x="Pre- treatment predictor", y="Outcome measurement",title="Continuous pre-treatment predictor and binary treatment") +
+  geom_abline(intercept =coef(lm_2)[1],slope = coef(lm_2)[2] ) +
+  geom_abline(intercept=coef(lm_2)[1]+coef(lm_2)[3],slope =coef(lm_2)[2]) +
+geom_text(aes(2.3, 29.5, label="Controls"),size=4) +
+geom_text(aes(1.5, 45, label="Treated"),size=4) + 
+  geom_text(aes(x0+.1, coef(lm_2)[1] + coef(lm_2)[2]*x0 + .5*coef(lm_2)[3], label=paste("Estimated\ntreatment\neffect is", fround(coef(lm_2)[3], 1))),size=4) +
+  geom_segment(aes(x=x0, y=coef(lm_2)[1] + coef(lm_2)[2]*x0, xend=x0, yend=coef(lm_2)[1] + coef(lm_2)[2]*x0 + coef(lm_2)[3]), arrow = arrow(length = unit(0.1, "cm"))) 
+```
+]
+]
+
+---
+class: middle
+
+## Building interpreting and checking regression models
+
+* Model building, starting with simple linear models of the form, $y=a+bx+error$ and expanding through additional predictors, interactions, and transformations.
+
+* Model fitting, which includes data manipulation, programming, and the use of algorithms to estimate regression coefficients and their uncertainties and to make probabilistic predictions.
+
+* Understanding model fits, which involves graphics, more programming, and an active investigation of the (imperfect) connections between measurements, parameters, and the underlying objects of study.
+
+* Criticism, which is not just about finding flaws and identifying questionable assumptions, but is also about considering directions for improvement of models. Or, if nothing else, limiting the claims that might be made by a naive reading of a fitted model.
+
+* The next step is to return to the model-building step, possibly incorporating new data in this effort. 
+
+---
+class: middle
+
+## Classical and Bayesian inference
+
+- As open science econometricians we mostly fit models to data and uses model to predict.
+- There are three concerns common to all all stesp in this framework
+
+1. What **information** is used in the estimation process
+2. What **assumptions** are made
+3. How estimates and predictions are **interpretted**, in a Classical or Bayesian framework
+
+---
+class: middle
+
+## Information
+
+- In regressions we usually have data on an outcome variable and one of more predictors. 
+- As we seen previous if we have one $x$ predictor or one binary and one continuous predictor we have visual their relationship with the outcome $y$ variable
+- In finance we will also have information on what data was observed
+  - Is the data measured on a regular frequency? 
+  - Is the data free from survivor bias?
+  - Is the data a random or convenience sample?
+
+
+---
+class: middle
+
+### Prior information *learning from experience*
+
+- We may also have *prior knowledge* comes from sources other than the data, based on experience with previous or similar studies. 
+- This information should be handled with care, as published research tends to overestimate effect sizes
+- This is due to researchers being under pressure to find large and *statistically significant* results
+- There are setting when local data is weak and it would be foolish to draw conclusions without using prior knowledge
+
+---
+class: middle
+
+## Assumptions
+
+1. The function form of the regression model; typically **linearity**.
+2. Where does the data come from: which potential observations are seen and which are not. A strong assumption here would be that there has been random sampling or random treatment assignment. In finance random sampling is raw.
+3. The real-world relevance of the measured data; for example are today's measurements predictive of of what happens tomorrow?. 
+- .acidinline[In time series financial econometrics we assess this statistically by comparing the stability of observations conducted in different ways or at different times.]
+
+---
+class: middle
+
+# Classical inference
+
+- Based on summarising the information in the data alone, not using prior information. 
+- Getting estimates and predictions that have well-known statistical properties, low bias and low variance.
+- This attitude is sometimes called *Frequentist*, in that classical statisticians focus on the long-run expectation of their methods.
+- Estimates should be correct on average; **unbiasedness**.
+- Confidence intervals should cover the true parameter value 95% of the time
+- An important principle of classical estimates is *conversatism*.
+- In classical statistics there should be a clear and *objective* path from data to inference, which in turn should be checkable, at least in theory, based on their frequency properties.
+
+---
+class: middle
+
+# Bayesian inference
+
+- Goes beyond summarising data to produce statistical inferences that include prior information.
+- This information could be awareness of bias, selection on unmeasured characteristics, prior information of effect sizes.
+- One strength of Bayesian inference, the analysis can provide more reasonable inferences and can be used to make direct predictions about future outcomes.
+- One weakness is the need for an additional information; the **prior distribution**, which can be contentious in that it makes some claims about the range of the prediction effects.
+
+---
+class: middle
+
+## The choice
+
+- .large[Classical inference, leading to pure summaries of data which can have limited value as predictions]
+- .large[Bayesian inference, which in theory can yield valid predictions even with weak data, but relies on additional assumptions]
+
+- .acidinline.large[A modern financial data scientist, knows there is no universally correct choice, but should be aware of both and use them pragmatically.]
+
+- .blockquote[
+
+- A practical advantage of Bayesian inference is that all inferences are probabilistic and thus can be represented by random simulations.
+
+- For this reason when you want to summarise uncertainty in estimation beyond confidence intervals, and when we want to use regression models for prediction, **we go Bayesian**.
+
+]
+
+---
+class: middle
+
+```{r,include=FALSE}
+profbeautyeval <- read_csv("profbeautyeval.csv")
+```
+
+### Professor beauty and teaching evaluations
+
+```{r}
+knitr::include_graphics("img/beauty.png")
+```
+
+---
+class: middle
+
+## Frequentist inferennce
+
+### Does beauty predict student evaluations?
+
+```{r}
+display(lm(eval~beauty,data=profbeautyeval))
+```
+
+---
+class: middle
+
+## Bayesian inference
+
+```{r bayesian, echo=TRUE, eval=FALSE}
+options(mc.cores = parallel::detectCores())
+m1<-stan_glm(eval~beauty,data=profbeautyeval,algorithm='optimizing')
+```
+
+---
+class: middle
+
+## Bayesian regression output
+
+```{r}
+m1<-readRDS("bayesmodel.rds")
+ summary(m1, digits = 2)
+```
+
+---
+class: middle
+
+## Plotting the uncertainty
+
+```{r echo=FALSE}
+posterior <- as.matrix(m1)
+plot_title <- ggtitle("Posterior distributions",
+                      "with medians and 80% intervals")
+ mcmc_areas(posterior,
+           pars = c("beauty"),
+           prob = 0.8) + plot_title
+```
+
+---
+class: middle, center, hide-logo
+background-image: url(img/title-slide.png)
+background-size: cover
+
+# .acid[Thank You]
+
+# .glow[Questions?]
+
+---
+class: middle
+### Extra reading (all link to qub library ebooks)
+
+
+[Gelman, A; Hill, J; & Ati Vehtari (2020)., Regression and Other stories, Wiley Publishing.](https://www-cambridge-org.queens.ezp1.qub.ac.uk/highereducation/books/regression-and-other-stories/DD20DD6C9057118581076E54E40C372C#overview)
+
+[Cunningham, S. (2021). Causal inference: The mixtape. Yale University Press.](https://mixtape.scunning.com/)
+
+[Statistical rethinking : a Bayesian course with examples in R and Stan / Richard McElreath](https://encore.qub.ac.uk/iii/encore/record/C__Rb2089842__Sstatistical%20rethinking__Orightresult__U__X7?lang=eng&suite=def)
+
