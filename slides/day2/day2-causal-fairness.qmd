@@ -1,0 +1,135 @@
+---
+title: "Mini-MBA Day 2"
+subtitle: "Causal & Fair Modelling for Credit Decisions"
+author: "Responsible Finance Faculty"
+date: "`r Sys.Date()`"
+format:
+  revealjs:
+    slide-number: true
+    css: ["../slides-style.css", "../xaringan-themer.css", "../mycssblend.css"]
+    transition: slide
+---
+
+## Causal & Fair Modelling
+
+**Learning goals**
+
+- Distinguish correlation vs. causation in spread analysis
+- Estimate treatment effects with ML-assisted methods
+- Diagnose and mitigate fairness issues in credit workflows
+
+## Recap & Bridge
+
+::: {.columns}
+::: {.column width="48%"}
+Day 1 achievements:
+- ESG data governance
+- Validation suite + access log
+:::
+::: {.column width="48%"}
+Day 2 focus:
+- Causal stories for spreads
+- Fairness metrics & mitigation
+- Model risk memo deliverable
+:::
+:::
+
+## When Correlation Misleads
+
+- Average spread tightened in Q3 → does every sector improve?
+- Simpson’s paradox: sector mix shift hides widening in Energy
+- Lesson: adjust for covariates before drawing conclusions
+
+![Simpson paradox illustration](../figs/overview_2a.pdf){width="80%"}
+
+## Causal DAG for Spread Shock
+
+```
+macro -> spread <- sentiment
+macro -> rating -> spread
+policy -> treatment -> spread
+rating -> treatment
+```
+
+- **Treatment**: negative sentiment trigger leading to hedging action
+- **Outcome**: subsequent change in spread (bps)
+- **Controls**: rating, sector, macro surprises, region
+
+## Double Machine Learning Recap
+
+1. Model outcome `Y` using covariates (Random Forest)
+2. Model treatment `T` using same covariates
+3. Cross-fit residuals to obtain debiased ATE
+
+Benefits: handles rich control sets, reduces bias, integrates with econML tooling used in lab.
+
+## Treatment Effect Interpretation
+
+- ATE $>0$: treatment increases spreads (risk signal)
+- Heterogeneous effects: evaluate by sector or region
+- Communicate as "Treatment added **18 bps** (±5) to EM spreads"
+
+Include sensitivity to assumptions in memo.
+
+## Regulatory Expectations on Fairness
+
+- **ECOA / Reg B**: avoid disparate treatment for protected classes
+- **FCA AI Principles**: fairness assessments for retail & wholesale clients
+- **OCC SR 11-7**: document model limitations and monitoring plans
+
+Even synthetic attributes (e.g., Emerging vs Developed) demonstrate awareness.
+
+## Fairness Metrics Primer
+
+| Metric | Question | Use case |
+| --- | --- | --- |
+| Demographic parity | Are flag/approval rates equal? | Early-warning triggers |
+| Equalized odds | Are error rates aligned across groups? | Binary risk classification |
+| Predictive parity | Are predicted risks calibrated? | Loan monitoring |
+
+Lab uses `MetricFrame` to compute selection rate, FPR, FNR.
+
+## Mitigation Techniques
+
+::: {.panelset}
+::: {.panel name="Reweighing"}
+- Adjust sample weights prior to training
+- Simple, transparent
+:::
+::: {.panel name="Threshold per group"}
+- Tune cutoffs to equalize errors
+- Requires governance approval
+:::
+::: {.panel name="Equalized Odds reduction"}
+- `fairlearn.reductions` ExponentiatedGradient
+- Post-process predictions to satisfy constraints
+:::
+:::
+
+Document chosen technique, residual risk, and monitoring plan.
+
+## Lab Roadmap
+
+1. Load `credit_spreads` + `macro` datasets
+2. Engineer treatment + covariates
+3. Run `LinearDML` to estimate ATE
+4. Train classifier for risk flag
+5. Compute fairness metrics & mitigation
+6. Draft model risk memo (template provided)
+
+## Memo Prompt
+
+Include:
+
+- Business question & causal narrative
+- Data sources, controls, assumptions
+- Treatment effect summary (bps + implications)
+- Fairness diagnostics table + mitigation plan
+- Residual risks, monitoring commitments
+
+Target: 1-page narrative + appendix screenshot.
+
+## Q&A & Preview
+
+- Resolve blockers before lab
+- Preview Day 3: Bayesian uncertainty + scenario design

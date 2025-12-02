@@ -1,0 +1,105 @@
+---
+title: "Mini-MBA Day 3"
+subtitle: "Bayesian Yield-Curve Risk & Scenario Analysis"
+author: "Responsible Finance Faculty"
+date: "`r Sys.Date()`"
+format:
+  revealjs:
+    slide-number: true
+    css: ["../slides-style.css", "../xaringan-themer.css", "../mycssblend.css"]
+    transition: fade
+---
+
+## Bayesian Yield-Curve Risk
+
+**Learning goals**
+
+- Compare classical vs. Bayesian inference for treasury problems
+- Encode priors that reflect policy constraints
+- Communicate posterior predictive scenarios to decision makers
+
+## Recap
+
+- Day 1: governance + ESG validation
+- Day 2: causal & fairness analysis for spreads
+- Today: probabilistic forecasting for yield curves, prepping for capstone
+
+## Classical vs. Bayesian Lens
+
+::: {.columns}
+::: {.column}
+**Classical**
+- Confidence intervals, frequentist properties
+- Limited ability to encode prior knowledge
+- Harder to express full predictive distributions
+:::
+::: {.column}
+**Bayesian**
+- Priors capture expert judgment / policy bounds
+- Posterior predictive samples for scenario narratives
+- Natural fit for stress testing + decision support
+:::
+:::
+
+## Term Structure Refresher
+
+- Components: **level**, **slope**, **curvature**
+- Data source: `YC <GO>` monthly export (1M–30Y)
+- Macro drivers: GDP surprise, inflation surprise, FOMC events
+
+Watch out for missing tenors and inconsistent date stamps.
+
+## Model Blueprint
+
+```
+yield_it ~ Normal(mu_it, sigma)
+mu_it = alpha + tenor_offset_t + beta_macro' * macro_i
+```
+
+- `alpha`: global level prior (Normal)
+- `tenor_offset`: category-specific adjustments
+- `beta_macro`: effect of macro surprises
+- `sigma`: Exponential prior for residual scale
+
+Implement with PyMC in the Day 3 lab.
+
+## Priors & Policy Alignment
+
+- **Alpha**: prior mean anchored to recent average (e.g., 1.5%)
+- **Tenor offsets**: center at 0 with moderate variance to avoid extreme slopes
+- **Macro betas**: zero-centered, reflecting belief that shocks change yields modestly
+
+Document rationale: "Assuming no more than ±40 bps shift per macro unit."
+
+## Posterior Diagnostics
+
+- Convergence metrics: $
+\hat{R} \approx 1$, effective sample size
+- Posterior summaries for alpha, betas, sigma
+- Posterior predictive checks (fan chart vs. actual)
+
+Use ArviZ `summary()` and `plot_ppc()` outputs.
+
+## Scenario Builder
+
+1. Define macro shock vector (GDP, inflation, FOMC)
+2. Multiply by sampled `beta_macro`
+3. Add tenor offsets + alpha to get distribution of yields
+4. Report P10/P50/P90 for each tenor
+
+Communicate as: _"Under stagflation, 2Y yield median = 4.1% (P10 3.7 / P90 4.6)."_
+
+## Lab Guidance
+
+- Run pip install (PyMC takes 2–3 minutes)
+- Use instructor-provided `yield_curve_*.csv`; fallback data available
+- Expect ~3 minutes sampling time (chains=2, draws=1500)
+- Save fan chart + scenario table for slide submission
+
+## Deliverables
+
+- Posterior summary + fan chart embedded in slides
+- Scenario table (two shocks) with narrative
+- Reflection paragraph on how Bayesian uncertainty influences treasury actions
+
+Preview Day 4: governance toolkit + capstone sprint.

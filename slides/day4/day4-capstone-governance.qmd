@@ -1,0 +1,76 @@
+---
+title: "Mini-MBA Day 4"
+subtitle: "Governance, Monitoring & Capstone Sprint"
+author: "Responsible Finance Faculty"
+date: "`r Sys.Date()`"
+format:
+  revealjs:
+    slide-number: true
+    css: ["../slides-style.css", "../xaringan-themer.css", "../mycssblend.css"]
+    transition: slide
+---
+
+## Governance & Capstone Sprint
+
+**Learning goals**
+
+- Operationalize monitoring + documentation expectations
+- Apply explainability tooling in an app context
+- Deliver the ESG-aware treasury analytics capstone
+
+## Governance Toolkit
+
+- Model cards / fact sheets
+- Approval workflow (1st line → MRM → governance committee)
+- Monitoring hooks: drift metrics, alerting, incident response checklist
+- Mapping to OCC SR 11-7 & ECB model risk guide
+
+## Explainability & Transparency
+
+- Use SHAP/feature importance to explain issuer recommendations
+- Communicate limitations (data coverage, priors, fairness results)
+- Do/Don’t for disclosures:
+  - ✅ Plain language on drivers & policies
+  - ❌ Overstating accuracy or ignoring known gaps
+
+## Capstone Narrative
+
+- Problem: treasury teams must allocate cash responsibly under ESG mandates
+- Solution: "ESG-Aware Treasury Advisor" app combining data validation, policy engine, explainability
+- Tech stack: Python, pandas, scikit-learn, Gradio/Streamlit
+
+## Architecture Snapshot
+
+1. **Data ingestion** – ESG & yield CSVs, validation log
+2. **Policy engine** – min ESG thresholds, weight caps
+3. **Analytics** – portfolio allocation + yield prediction model
+4. **Explainability** – SHAP bar plots
+5. **UI** – Gradio / Streamlit with sliders, tables, exports
+
+## Sprint Checklist
+
+- Finalize datasets (copy from Drive)
+- Define team roles (data, model, UX, documentation)
+- Stand-up cadence: plan → build → check-in → dry run
+- Track tasks on shared board (Miro/Trello/whiteboard)
+
+## Deliverables
+
+- Running demo (Gradio share link or Streamlit+ngrok URL) + screenshot
+- Model card + audit log entry
+- Pitch slide deck (3–4 slides) articulating value & controls
+- Reflection note (≤250 words) on risks mitigated
+
+## Presentation Guidelines
+
+- 3-minute demo + 2-minute Q&A per team
+- Cover: problem, approach, responsible controls, roadmap
+- Use rubric dimensions (data integrity, policy engine, explainability, UX, governance, presentation)
+
+## Wrap-Up & Next Steps
+
+- Submit artifacts via LMS by end of day
+- Post-course: digital badge + alumni community invite
+- Suggested follow-ons: advanced fairness, MRM automation, certification tracks
+
+Thank you for building responsibly!
