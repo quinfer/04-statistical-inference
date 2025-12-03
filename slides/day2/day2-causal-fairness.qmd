@@ -1,0 +1,199 @@
+---
+title: "Mini-MBA Day 2"
+subtitle: "Causal & Fair Modelling for Credit Decisions"
+author: "Responsible Finance Faculty"
+date: "`r Sys.Date()`"
+format:
+  revealjs:
+    slide-number: true
+    css: ["../slides-style.css", "../xaringan-themer.css", "../mycssblend.css"]
+    transition: slide
+    notes: true
+  pdf:
+    beamer: true
+    theme: metropolis
+---
+
+## Causal & Fair Modelling
+
+**Learning goals**
+
+- Distinguish correlation vs. causation in spread analysis
+- Estimate treatment effects with ML-assisted methods
+- Diagnose and mitigate fairness issues in credit workflows
+
+::: notes
+- Reinforce that today’s deliverable is a memo targeted at model risk managers.
+- Emphasize interplay between causal inference and fairness testing.
+:::
+
+## Recap & Bridge
+
+::: {.columns}
+::: {.column width="48%"}
+Day 1 achievements:
+- ESG data governance
+- Validation suite + access log
+:::
+::: {.column width="48%"}
+Day 2 focus:
+- Causal stories for spreads
+- Fairness metrics & mitigation
+- Model risk memo deliverable
+:::
+:::
+
+::: notes
+- Ask for volunteers to share Day 1 remediation findings as segue.
+- Highlight that the same data controls feed into today’s models.
+:::
+
+## When Correlation Misleads
+
+- Average spread tightened in Q3 → does every sector improve?
+- Simpson’s paradox: sector mix shift hides widening in Energy
+- Lesson: adjust for covariates before drawing conclusions
+
+![Simpson paradox illustration](../figs/overview_2a.pdf){width="80%"}
+
+::: notes
+- Walk through the chart slowly; ask audience what they observe.
+- Connect to their own portfolios where mix shifts hide risk.
+:::
+
+## Causal DAG for Spread Shock
+
+```
+macro -> spread <- sentiment
+macro -> rating -> spread
+policy -> treatment -> spread
+rating -> treatment
+```
+
+- **Treatment**: negative sentiment trigger leading to hedging action
+- **Outcome**: subsequent change in spread (bps)
+- **Controls**: rating, sector, macro surprises, region
+
+::: notes
+- Encourage teams to sketch their own DAG for the memo.
+- Mention that regulators increasingly expect DAGs or causal diagrams.
+:::
+
+## Double Machine Learning Recap
+
+1. Model outcome `Y` using covariates (Random Forest)
+2. Model treatment `T` using same covariates
+3. Cross-fit residuals to obtain debiased ATE
+
+Benefits: handles rich control sets, reduces bias, integrates with econML tooling used in lab.
+
+::: notes
+- Clarify that DML still relies on unconfoundedness; we’re not magically solving all bias.
+- Provide tip: keep hyperparameters modest to avoid long runtimes in Colab.
+:::
+
+## Treatment Effect Interpretation
+
+- ATE $>0$: treatment increases spreads (risk signal)
+- Heterogeneous effects: evaluate by sector or region
+- Communicate as "Treatment added **18 bps** (±5) to EM spreads"
+
+Include sensitivity to assumptions in memo.
+
+::: notes
+- Remind them to include standard errors/conf intervals in narrative form.
+- Suggest comparing sectors (EM vs DM) for interesting insights.
+:::
+
+## Regulatory Expectations on Fairness
+
+- **ECOA / Reg B**: avoid disparate treatment for protected classes
+- **FCA AI Principles**: fairness assessments for retail & wholesale clients
+- **OCC SR 11-7**: document model limitations and monitoring plans
+
+Even synthetic attributes (e.g., Emerging vs Developed) demonstrate awareness.
+
+::: notes
+- Cite recent FCA/CFPB speeches calling for fairness testing to make stakes real.
+- Encourage participants to think about their own protected attributes.
+:::
+
+## Fairness Metrics Primer
+
+| Metric | Question | Use case |
+| --- | --- | --- |
+| Demographic parity | Are flag/approval rates equal? | Early-warning triggers |
+| Equalized odds | Are error rates aligned across groups? | Binary risk classification |
+| Predictive parity | Are predicted risks calibrated? | Loan monitoring |
+
+Lab uses `MetricFrame` to compute selection rate, FPR, FNR.
+
+::: notes
+- Mention that parity metrics can conflict; choose those aligned with policy.
+- Remind to log rationale for metric choice in memo.
+:::
+
+## Mitigation Techniques
+
+::: {.panelset}
+::: {.panel name="Reweighing"}
+- Adjust sample weights prior to training
+- Simple, transparent
+:::
+::: {.panel name="Threshold per group"}
+- Tune cutoffs to equalize errors
+- Requires governance approval
+:::
+::: {.panel name="Equalized Odds reduction"}
+- `fairlearn.reductions` ExponentiatedGradient
+- Post-process predictions to satisfy constraints
+:::
+:::
+
+Document chosen technique, residual risk, and monitoring plan.
+
+::: notes
+- Advise trying one technique end-to-end rather than dabbling in many.
+- Stress need to document business impact of mitigation (accuracy vs fairness).
+:::
+
+## Lab Roadmap
+
+1. Load `credit_spreads` + `macro` datasets
+2. Engineer treatment + covariates
+3. Run `LinearDML` to estimate ATE
+4. Train classifier for risk flag
+5. Compute fairness metrics & mitigation
+6. Draft model risk memo (template provided)
+
+::: notes
+- Suggest time boxing: 60 min modelling, 30 min fairness, 30 min memo draft.
+- Encourage screen captures of MetricFrame outputs for appendix.
+:::
+
+## Memo Prompt
+
+Include:
+
+- Business question & causal narrative
+- Data sources, controls, assumptions
+- Treatment effect summary (bps + implications)
+- Fairness diagnostics table + mitigation plan
+- Residual risks, monitoring commitments
+
+Target: 1-page narrative + appendix screenshot.
+
+::: notes
+- Provide sample outline: Exec summary → Evidence → Plan → Risks.
+- Remind that memos should be readable by non-technical CROs.
+:::
+
+## Q&A & Preview
+
+- Resolve blockers before lab
+- Preview Day 3: Bayesian uncertainty + scenario design
+
+::: notes
+- Offer office hours after session for stuck teams.
+- Tease that Day 3 will reuse sentiment/macro signals for priors.
+:::

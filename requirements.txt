@@ -1,0 +1,16 @@
+pandas
+numpy
+plotly==5.24.0
+statsmodels
+scikit-learn
+econml==0.15.1
+fairlearn
+pymc==5.12.0
+arviz
+shap
+gradio==4.42.0
+streamlit
+pyngrok
+rich
+pyjanitor
+openpyxl
