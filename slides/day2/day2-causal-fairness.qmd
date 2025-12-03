@@ -8,6 +8,10 @@ format:
     slide-number: true
     css: ["../slides-style.css", "../xaringan-themer.css", "../mycssblend.css"]
     transition: slide
+    notes: true
+  pdf:
+    beamer: true
+    theme: metropolis
 ---
 
 ## Causal & Fair Modelling
@@ -17,6 +21,11 @@ format:
 - Distinguish correlation vs. causation in spread analysis
 - Estimate treatment effects with ML-assisted methods
 - Diagnose and mitigate fairness issues in credit workflows
+
+::: notes
+- Reinforce that today’s deliverable is a memo targeted at model risk managers.
+- Emphasize interplay between causal inference and fairness testing.
+:::
 
 ## Recap & Bridge
 
@@ -34,6 +43,11 @@ Day 2 focus:
 :::
 :::
 
+::: notes
+- Ask for volunteers to share Day 1 remediation findings as segue.
+- Highlight that the same data controls feed into today’s models.
+:::
+
 ## When Correlation Misleads
 
 - Average spread tightened in Q3 → does every sector improve?
@@ -41,6 +55,11 @@ Day 2 focus:
 - Lesson: adjust for covariates before drawing conclusions
 
 ![Simpson paradox illustration](../figs/overview_2a.pdf){width="80%"}
+
+::: notes
+- Walk through the chart slowly; ask audience what they observe.
+- Connect to their own portfolios where mix shifts hide risk.
+:::
 
 ## Causal DAG for Spread Shock
 
@@ -55,6 +74,11 @@ rating -> treatment
 - **Outcome**: subsequent change in spread (bps)
 - **Controls**: rating, sector, macro surprises, region
 
+::: notes
+- Encourage teams to sketch their own DAG for the memo.
+- Mention that regulators increasingly expect DAGs or causal diagrams.
+:::
+
 ## Double Machine Learning Recap
 
 1. Model outcome `Y` using covariates (Random Forest)
@@ -62,6 +86,11 @@ rating -> treatment
 3. Cross-fit residuals to obtain debiased ATE
 
 Benefits: handles rich control sets, reduces bias, integrates with econML tooling used in lab.
+
+::: notes
+- Clarify that DML still relies on unconfoundedness; we’re not magically solving all bias.
+- Provide tip: keep hyperparameters modest to avoid long runtimes in Colab.
+:::
 
 ## Treatment Effect Interpretation
 
@@ -71,6 +100,11 @@ Benefits: handles rich control sets, reduces bias, integrates with econML toolin
 
 Include sensitivity to assumptions in memo.
 
+::: notes
+- Remind them to include standard errors/conf intervals in narrative form.
+- Suggest comparing sectors (EM vs DM) for interesting insights.
+:::
+
 ## Regulatory Expectations on Fairness
 
 - **ECOA / Reg B**: avoid disparate treatment for protected classes
@@ -78,6 +112,11 @@ Include sensitivity to assumptions in memo.
 - **OCC SR 11-7**: document model limitations and monitoring plans
 
 Even synthetic attributes (e.g., Emerging vs Developed) demonstrate awareness.
+
+::: notes
+- Cite recent FCA/CFPB speeches calling for fairness testing to make stakes real.
+- Encourage participants to think about their own protected attributes.
+:::
 
 ## Fairness Metrics Primer
 
@@ -88,6 +127,11 @@ Even synthetic attributes (e.g., Emerging vs Developed) demonstrate awareness.
 | Predictive parity | Are predicted risks calibrated? | Loan monitoring |
 
 Lab uses `MetricFrame` to compute selection rate, FPR, FNR.
+
+::: notes
+- Mention that parity metrics can conflict; choose those aligned with policy.
+- Remind to log rationale for metric choice in memo.
+:::
 
 ## Mitigation Techniques
 
@@ -108,6 +152,11 @@ Lab uses `MetricFrame` to compute selection rate, FPR, FNR.
 
 Document chosen technique, residual risk, and monitoring plan.
 
+::: notes
+- Advise trying one technique end-to-end rather than dabbling in many.
+- Stress need to document business impact of mitigation (accuracy vs fairness).
+:::
+
 ## Lab Roadmap
 
 1. Load `credit_spreads` + `macro` datasets
@@ -116,6 +165,11 @@ Document chosen technique, residual risk, and monitoring plan.
 4. Train classifier for risk flag
 5. Compute fairness metrics & mitigation
 6. Draft model risk memo (template provided)
+
+::: notes
+- Suggest time boxing: 60 min modelling, 30 min fairness, 30 min memo draft.
+- Encourage screen captures of MetricFrame outputs for appendix.
+:::
 
 ## Memo Prompt
 
@@ -129,7 +183,17 @@ Include:
 
 Target: 1-page narrative + appendix screenshot.
 
+::: notes
+- Provide sample outline: Exec summary → Evidence → Plan → Risks.
+- Remind that memos should be readable by non-technical CROs.
+:::
+
 ## Q&A & Preview
 
 - Resolve blockers before lab
 - Preview Day 3: Bayesian uncertainty + scenario design
+
+::: notes
+- Offer office hours after session for stuck teams.
+- Tease that Day 3 will reuse sentiment/macro signals for priors.
+:::

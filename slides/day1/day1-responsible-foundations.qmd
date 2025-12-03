@@ -9,6 +9,10 @@ format:
     chalkboard: false
     css: ["../slides-style.css", "../xaringan-themer.css", "../mycssblend.css"]
     transition: fade
+    notes: true
+  pdf:
+    beamer: true
+    theme: metropolis
 ---
 
 ## Responsible Foundations & Data Controls
@@ -19,6 +23,11 @@ format:
 - Governance & ethics playbook
 - ESG data pitfalls and controls
 - Prep for the Day 1 Colab lab
+
+::: notes
+- Set expectations for the four-day arc and highlight that today emphasizes governance and data hygiene.
+- Emphasize that labs are Python/Colab based even if repo started in R.
+:::
 
 ## Context & Imperative
 
@@ -35,6 +44,11 @@ format:
 :::
 :::
 
+::: notes
+- Reference recent regulatory actions (e.g., SEC AI enforcement) to make fines tangible.
+- Encourage participants to share their own compliance anecdotes via chat/poll.
+:::
+
 ## Responsible AI Loop for Finance
 
 1. **Define** outcomes, stakeholders, risk appetite
@@ -43,6 +57,11 @@ format:
 4. **Govern** via audits, playbooks, accountable owners
 
 We revisit this loop across data, modelling, and deployment all week.
+
+::: notes
+- Reinforce that we will keep bouncing back to this loop; it’s not theoretical.
+- Ask the group which stage their teams struggle with most.
+:::
 
 ## Governance Roles & Artifacts
 
@@ -67,6 +86,11 @@ Artifacts to maintain:
 :::
 :::
 
+::: notes
+- Tie each role to a real deliverable they own (e.g., MRM signs off on validation plan).
+- Stress that auditors/regulators want to see artifacts, not just good intent.
+:::
+
 ## Bloomberg ESG Data Essentials
 
 - Function: `ESG <GO>` → Fundamentals export
@@ -77,6 +101,11 @@ Artifacts to maintain:
   - ADR duplicate tickers / currency mismatches
 
 **Control**: enforce schema checks + freshness thresholds before analysis.
+
+::: notes
+- Mention that instructor-supplied exports already respect licensing—students must keep them private.
+- Encourage questions about other ESG vendors and how the checks generalize.
+:::
 
 ## Data Stewardship Workflow
 
@@ -98,6 +127,11 @@ Artifacts to maintain:
 :::
 :::
 
+::: notes
+- Clarify that the lab auto-generates a JSON schema to speed compliance reviews.
+- Highlight that remediation notes should be action-oriented (who fixes what by when).
+:::
+
 ## Lab Flow Overview
 
 ![Lego steps for lab flow](../img/lego-steps.png){width="70%" fig-alt="Steps for lab"}
@@ -107,6 +141,11 @@ Artifacts to maintain:
 3. Append compliance log entry
 4. Summarize findings (3 bullets) for MRM
 
+::: notes
+- Show the actual CSV naming convention in Drive to reduce mistakes.
+- Suggest pairing participants so one drives and one documents.
+:::
+
 ## Live Demo Checklist
 
 - Execute pip install cell (Colab runtime)
@@ -115,6 +154,11 @@ Artifacts to maintain:
 - Trigger a deliberate data issue to show report output
 
 _Reminder: save notebooks to Drive; Colab resets after ~60 min idle._
+
+::: notes
+- Warn about install time (1–2 minutes) so learners don’t panic.
+- Demonstrate forcing a failed check so they know how to interpret the table.
+:::
 
 ## Discussion: Data Controls in Practice
 
@@ -126,6 +170,11 @@ Guiding questions:
 
 Capture highlights (Menti, Jamboard) to revisit on Day 4.
 
+::: notes
+- Use prompting questions if silence: “Who owns the ESG vendor list today?”
+- Encourage cross-industry sharing (banks vs. fintech vs. asset managers).
+:::
+
 ## Deliverables & Preview
 
 - Exported notebook (PDF/HTML) showing validation
@@ -134,6 +183,16 @@ Capture highlights (Menti, Jamboard) to revisit on Day 4.
 
 Tomorrow: causal stories + fairness diagnostics in credit spreads.
 
+::: notes
+- Remind everyone to upload artifacts before leaving; feedback comes Day 2 morning.
+- Tease that Day 2 memo builds on today’s log.
+:::
+
 ## Q&A
 
 Contact: `faculty@responsiblefinance.edu`
+
+::: notes
+- Share office hours / Slack channel info if available.
+- Ask for one-word takeaway in chat before dismissing.
+:::

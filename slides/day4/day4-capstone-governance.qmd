@@ -8,6 +8,10 @@ format:
     slide-number: true
     css: ["../slides-style.css", "../xaringan-themer.css", "../mycssblend.css"]
     transition: slide
+    notes: true
+  pdf:
+    beamer: true
+    theme: metropolis
 ---
 
 ## Governance & Capstone Sprint
@@ -18,12 +22,22 @@ format:
 - Apply explainability tooling in an app context
 - Deliver the ESG-aware treasury analytics capstone
 
+::: notes
+- Remind teams that today’s scores weigh heavily in final grade.
+- Encourage assigning roles before coding to stay efficient.
+:::
+
 ## Governance Toolkit
 
 - Model cards / fact sheets
 - Approval workflow (1st line → MRM → governance committee)
 - Monitoring hooks: drift metrics, alerting, incident response checklist
 - Mapping to OCC SR 11-7 & ECB model risk guide
+
+::: notes
+- Briefly recap regulators’ expectations for documentation and monitoring.
+- Encourage teams to cite relevant policies in their model cards.
+:::
 
 ## Explainability & Transparency
 
@@ -33,11 +47,21 @@ format:
   - ✅ Plain language on drivers & policies
   - ❌ Overstating accuracy or ignoring known gaps
 
+::: notes
+- Demonstrate SHAP output from Day 4 notebook so teams know target fidelity.
+- Stress honesty about data gaps when presenting to execs.
+:::
+
 ## Capstone Narrative
 
 - Problem: treasury teams must allocate cash responsibly under ESG mandates
 - Solution: "ESG-Aware Treasury Advisor" app combining data validation, policy engine, explainability
 - Tech stack: Python, pandas, scikit-learn, Gradio/Streamlit
+
+::: notes
+- Re-anchor storyline so presenters stay focused on treasury persona.
+- Clarify data will be provided—no Bloomberg pulls needed today.
+:::
 
 ## Architecture Snapshot
 
@@ -47,12 +71,22 @@ format:
 4. **Explainability** – SHAP bar plots
 5. **UI** – Gradio / Streamlit with sliders, tables, exports
 
+::: notes
+- Suggest starting with notebook pipeline, then wrap UI once analytics stable.
+- Remind them to capture screenshots for submission.
+:::
+
 ## Sprint Checklist
 
 - Finalize datasets (copy from Drive)
 - Define team roles (data, model, UX, documentation)
 - Stand-up cadence: plan → build → check-in → dry run
 - Track tasks on shared board (Miro/Trello/whiteboard)
+
+::: notes
+- Encourage quick stand-ups every 45 min to unblock issues.
+- Recommend locking MVP scope before chasing stretch goals.
+:::
 
 ## Deliverables
 
@@ -61,11 +95,21 @@ format:
 - Pitch slide deck (3–4 slides) articulating value & controls
 - Reflection note (≤250 words) on risks mitigated
 
+::: notes
+- Model card template available in repo—point teams there.
+- Remind to download ngrok logs/screenshots before session ends.
+:::
+
 ## Presentation Guidelines
 
 - 3-minute demo + 2-minute Q&A per team
 - Cover: problem, approach, responsible controls, roadmap
 - Use rubric dimensions (data integrity, policy engine, explainability, UX, governance, presentation)
+
+::: notes
+- Enforce strict timing; suggest slide order: problem → demo → controls → roadmap.
+- Encourage teams to anticipate regulator-style questions.
+:::
 
 ## Wrap-Up & Next Steps
 
@@ -74,3 +118,8 @@ format:
 - Suggested follow-ons: advanced fairness, MRM automation, certification tracks
 
 Thank you for building responsibly!
+
+::: notes
+- Outline post-course badge timeline and alumni Slack invite.
+- Invite feedback survey completion.
+:::

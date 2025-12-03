@@ -8,6 +8,10 @@ format:
     slide-number: true
     css: ["../slides-style.css", "../xaringan-themer.css", "../mycssblend.css"]
     transition: fade
+    notes: true
+  pdf:
+    beamer: true
+    theme: metropolis
 ---
 
 ## Bayesian Yield-Curve Risk
@@ -18,11 +22,21 @@ format:
 - Encode priors that reflect policy constraints
 - Communicate posterior predictive scenarios to decision makers
 
+::: notes
+- Position Bayesian methods as complement to regulatory stress testing, not replacement.
+- Mention runtime expectations so participants aren’t surprised.
+:::
+
 ## Recap
 
 - Day 1: governance + ESG validation
 - Day 2: causal & fairness analysis for spreads
 - Today: probabilistic forecasting for yield curves, prepping for capstone
+
+::: notes
+- Invite sharing of Day 2 fairness insights to connect modules.
+- Highlight that outputs today feed directly into the Day 4 app.
+:::
 
 ## Classical vs. Bayesian Lens
 
@@ -41,6 +55,11 @@ format:
 :::
 :::
 
+::: notes
+- Contrast confidence vs credible intervals using a simple example.
+- Emphasize ability to encode senior management beliefs via priors.
+:::
+
 ## Term Structure Refresher
 
 - Components: **level**, **slope**, **curvature**
@@ -48,6 +67,11 @@ format:
 - Macro drivers: GDP surprise, inflation surprise, FOMC events
 
 Watch out for missing tenors and inconsistent date stamps.
+
+::: notes
+- Encourage teams to validate tenor coverage before modelling.
+- Mention using macro surprise series from `ECST <GO>` supplied bundle.
+:::
 
 ## Model Blueprint
 
@@ -63,6 +87,11 @@ mu_it = alpha + tenor_offset_t + beta_macro' * macro_i
 
 Implement with PyMC in the Day 3 lab.
 
+::: notes
+- Keep structure deliberately simple for runtime; encourage experimentation later.
+- Point out where to plug in extra macro covariates if desired.
+:::
+
 ## Priors & Policy Alignment
 
 - **Alpha**: prior mean anchored to recent average (e.g., 1.5%)
@@ -70,6 +99,11 @@ Implement with PyMC in the Day 3 lab.
 - **Macro betas**: zero-centered, reflecting belief that shocks change yields modestly
 
 Document rationale: "Assuming no more than ±40 bps shift per macro unit."
+
+::: notes
+- Stress importance of writing priors in plain language for risk committees.
+- Suggest running sensitivity checks by widening priors.
+:::
 
 ## Posterior Diagnostics
 
@@ -80,6 +114,11 @@ Document rationale: "Assuming no more than ±40 bps shift per macro unit."
 
 Use ArviZ `summary()` and `plot_ppc()` outputs.
 
+::: notes
+- Call out $\n\\hat R$ and effective sample size as primary convergence checks.
+- Encourage saving PPC plots for deliverable.
+:::
+
 ## Scenario Builder
 
 1. Define macro shock vector (GDP, inflation, FOMC)
@@ -87,7 +126,12 @@ Use ArviZ `summary()` and `plot_ppc()` outputs.
 3. Add tenor offsets + alpha to get distribution of yields
 4. Report P10/P50/P90 for each tenor
 
-Communicate as: _"Under stagflation, 2Y yield median = 4.1% (P10 3.7 / P90 4.6)."_
+Communicate as: _“Under stagflation, 2Y yield median = 4.1% (P10 3.7 / P90 4.6).”_
+
+::: notes
+- Provide suggested scenarios (stagflation vs. dovish pivot) to get teams started.
+- Tie each scenario to treasury actions (hedge, shift duration, update liquidity plan).
+:::
 
 ## Lab Guidance
 
@@ -96,6 +140,11 @@ Communicate as: _"Under stagflation, 2Y yield median = 4.1% (P10 3.7 / P90 4.6).
 - Expect ~3 minutes sampling time (chains=2, draws=1500)
 - Save fan chart + scenario table for slide submission
 
+::: notes
+- Remind them to pin seeds for reproducibility and to keep draws modest if runtime tight.
+- Encourage storing outputs in Drive for easy slide embedding.
+:::
+
 ## Deliverables
 
 - Posterior summary + fan chart embedded in slides
@@ -103,3 +152,8 @@ Communicate as: _"Under stagflation, 2Y yield median = 4.1% (P10 3.7 / P90 4.6).
 - Reflection paragraph on how Bayesian uncertainty influences treasury actions
 
 Preview Day 4: governance toolkit + capstone sprint.
+
+::: notes
+- Reinforce rubric expectations: clarity of narrative + visuals.
+- Invite final questions on Bayesian approach before moving on.
+:::
